@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+*.log
+/.yarn
+*.tsbuildinfo
+/dist/*.js
+/dist/*.map
+/.env

@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "esnext",
+    "allowJs": true,
+    "target": "esnext",
+    "esModuleInterop": true,
+    "isolatedModules": false,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "downlevelIteration": true,
+    "jsx": "react",
+    "skipLibCheck": true,
+    "noEmit": true,
+    "declaration": false,
+    "incremental": true,
+    "strictNullChecks": true
+  },
+  "include": ["src/index.tsx"],
+  "exclude": ["**/*.js", "node_modules"],
+  "watchOptions": {
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents"
+  }
+}

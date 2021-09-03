@@ -1,0 +1,52 @@
+{
+  "name": "@yusukeshibata/dropbox-photos",
+  "version": "1.0.0",
+  "description": "Dropbox photos",
+  "main": "index.js",
+  "scripts": {
+    "develop": "node scripts/develop",
+    "build": "node scripts/build",
+    "deploy": "node scripts/build && gh-pages -d dist"
+  },
+  "author": "Yusuke Shibata<yusukeshib@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@material-ui/core": "^4.12.1",
+    "@material-ui/icons": "^4.11.2",
+    "@react-hook/resize-observer": "^1.2.2",
+    "@types/lodash": "^4.14.171",
+    "@types/node": "^16.3.2",
+    "@types/react": "^17.0.11",
+    "@types/react-beforeunload": "^2.1.0",
+    "@types/react-dom": "^17.0.8",
+    "@types/react-router-dom": "^5.1.8",
+    "browser-sync": "^2.26.14",
+    "chalk": "^4.1.1",
+    "dayjs": "^1.10.6",
+    "delay": "^5.0.0",
+    "dotenv": "^10.0.0",
+    "dropbox": "^10.4.1",
+    "esbuild": "^0.12.9",
+    "filesize": "^7.0.0",
+    "gh-pages": "^3.2.3",
+    "immer": "^9.0.5",
+    "lodash": "^4.17.21",
+    "mitt": "^2.1.0",
+    "re-reselect": "^4.0.0",
+    "react": "^17.0.2",
+    "react-beforeunload": "^2.5.1",
+    "react-dom": "^17.0.2",
+    "react-hotkeys": "^2.0.0",
+    "react-redux": "^7.2.4",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.1.0",
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
+    "typescript": "^4.3.4"
+  },
+  "browser": {
+    "crypto": false,
+    "util": false
+  }
+}
