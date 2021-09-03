@@ -1,12 +1,16 @@
-import React, { memo, useRef, useState, useEffect } from 'react';
+import React, { memo, useRef, useCallback, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import PrevIcon from '@material-ui/icons/ArrowBack';
 import NextIcon from '@material-ui/icons/ArrowForward';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuIcon from '@material-ui/icons/MoreVert';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, action, selector } from './context';
 import { createStructuredSelector } from 'reselect';
 import { useSize } from './hooks';
+import classnames from 'classnames';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -37,10 +41,21 @@ const useStyles = makeStyles((theme) => ({
     transform: `translateX(${-24 + 32}px)`,
     bottom: theme.spacing(1),
   },
+  menuIcon: {
+    color: 'white',
+    position: 'absolute',
+    right: theme.spacing(6),
+    top: theme.spacing(1),
+    zIndex: 1,
+  },
+  menuIconOpened: {
+    right: theme.spacing(1),
+  },
 }));
 
 const s = createStructuredSelector({
   thumbnailMap: selector.thumbnailMap,
+  infoPanelOpened: selector.infoPanelOpened,
 });
 
 interface PhotoImageProps {
@@ -53,14 +68,28 @@ interface PhotoImageProps {
 
 const PhotoImage: React.FC<PhotoImageProps> = memo((props) => {
   const classes = useStyles();
-  const { thumbnailMap } = useSelector(s);
+  const { infoPanelOpened, thumbnailMap } = useSelector(s);
   const [blob, setBlob] = useState<Blob | null>(null);
   const [url, setUrl] = useState('');
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const lastRequestedFileId = useRef<string>('');
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
   const p = Math.min(size.width / props.width, size.height / props.height);
+
+  const onOpen = useCallback((event) => {
+    setAnchorEl(event.currentTarget);
+  }, []);
+
+  const onClose = useCallback(() => {
+    setAnchorEl(null);
+  }, []);
+
+  const onDownload = useCallback(() => {
+    setAnchorEl(null);
+    dispatch(action.downloadOriginal(props.fileId));
+  }, [dispatch, props.fileId]);
 
   useEffect(() => {
     (async () => {
@@ -95,6 +124,18 @@ const PhotoImage: React.FC<PhotoImageProps> = memo((props) => {
       <IconButton onClick={props.onNext} className={classes.nextIcon}>
         <NextIcon />
       </IconButton>
+      <IconButton
+        onClick={onOpen}
+        className={classnames(
+          classes.menuIcon,
+          infoPanelOpened && classes.menuIconOpened,
+        )}
+      >
+        <MenuIcon />
+      </IconButton>
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={onClose}>
+        <MenuItem onClick={onDownload}>Download original</MenuItem>
+      </Menu>
     </div>
   );
 });

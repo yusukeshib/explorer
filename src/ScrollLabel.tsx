@@ -14,6 +14,7 @@ const s = createStructuredSelector({
 
 const useStyles = makeStyles((theme) => ({
   container: {
+    userSelect: 'none',
     position: 'fixed',
     right: theme.spacing(3),
     height: 32,
@@ -38,7 +39,7 @@ const ScrollLabel = memo(() => {
       className={classes.container}
       style={{ top: top + height / 2 + 48 - 16 }}
     >
-      <Typography>{scrollingLabel || 'Test'}</Typography>
+      <Typography>{scrollingLabel}</Typography>
     </div>
   );
 });

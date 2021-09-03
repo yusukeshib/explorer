@@ -16,3 +16,16 @@ export const dataURItoBlob = (dataURI: string, mimetype: string) => {
   }
   return new Blob([new Uint8Array(array)], { type: mimetype });
 };
+
+export const downloadBlob = (blob: Blob, fileName: string) => {
+  const anchor = document.createElement('a');
+  document.body.appendChild(anchor);
+
+  const objectUrl = URL.createObjectURL(blob);
+
+  anchor.href = objectUrl;
+  anchor.download = fileName;
+  anchor.click();
+
+  URL.revokeObjectURL(objectUrl);
+};

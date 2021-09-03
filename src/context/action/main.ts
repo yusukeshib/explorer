@@ -18,7 +18,7 @@ import sortBy from 'lodash/sortBy';
 import dayjs from 'dayjs';
 import * as selector from '../selector';
 import { Dropbox } from 'dropbox';
-import { dataURItoBlob } from '../../utils/blobUtils';
+import { downloadBlob, dataURItoBlob } from '../../utils/blobUtils';
 import ThumbnailRequest from '../thumbnail';
 
 const thumbReq = new ThumbnailRequest();
@@ -468,6 +468,27 @@ export const loadThumbnail =
       }
 
       dispatchMain(dispatch, { thumbnailMap });
+    } catch (error) {
+      dispatchMain(dispatch, { error: `${error}` });
+    }
+  };
+
+export const downloadOriginal =
+  (fileId: string): AsyncMainAction<void> =>
+  async (dispatch, getState) => {
+    try {
+      const ctx = getState();
+
+      const dbx = ctx.main.dbx;
+      if (!dbx) return;
+
+      const file = ctx.main.files.find((file) => file.id === fileId);
+      if (!file) return;
+
+      const res = await dbx.filesDownload({ path: fileId });
+      const blob = (res.result as any).fileBlob;
+      const filename = file.name.split('/').pop();
+      downloadBlob(blob, filename || 'Unknown.jpeg');
     } catch (error) {
       dispatchMain(dispatch, { error: `${error}` });
     }
