@@ -1,11 +1,9 @@
 import React, { memo, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
 import PrevIcon from '@material-ui/icons/ArrowBack';
-import { useDispatch, useSelector } from 'react-redux';
-import { ImageLayoutInfo, AppDispatch, action, selector } from './context';
+import { useSelector } from 'react-redux';
+import { ImageLayoutInfo, selector } from './context';
 import { useHistory, useParams } from 'react-router';
 import { createStructuredSelector } from 'reselect';
 import { GlobalHotKeys } from 'react-hotkeys';
@@ -54,17 +52,12 @@ const Photo = memo(() => {
   const classes = useStyles();
   const { fileId } = useParams<{ fileId: string }>();
   const { layoutList } = useSelector(s);
-  const dispatch = useDispatch<AppDispatch>();
   const history = useHistory();
   const index = layoutList.findIndex(
     (layout) =>
       layout.type === 'image' && (layout as ImageLayoutInfo).file.id === fileId,
   );
   const layout = layoutList[index] as ImageLayoutInfo;
-
-  const onToggleInfo = useCallback(() => {
-    dispatch(action.toggleInfoPanel());
-  }, [dispatch]);
 
   const onClose = useCallback(() => {
     history.push('/');
@@ -111,11 +104,6 @@ const Photo = memo(() => {
       <IconButton onClick={onClose} className={classes.closeIcon}>
         <PrevIcon />
       </IconButton>
-      <Hidden xsDown>
-        <IconButton onClick={onToggleInfo} className={classes.infoIcon}>
-          <InfoIcon />
-        </IconButton>
-      </Hidden>
       <GlobalHotKeys
         allowChanges
         keyMap={keyMap}

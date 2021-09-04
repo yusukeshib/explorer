@@ -67,9 +67,9 @@ const PhotoInfo = memo(() => {
     <Hidden xsDown>
       {infoPanelOpened && (
         <nav className={classes.drawer}>
-          <IconButton onClick={onToggleInfo} className={classes.closeInfoIcon}>
+        {/*<IconButton onClick={onToggleInfo} className={classes.closeInfoIcon}>
             <CloseIcon />
-          </IconButton>
+          </IconButton>*/}
           <div className={classes.info}>
             <Typography variant="h6" gutterBottom>
               Details

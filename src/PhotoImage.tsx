@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, action, selector } from './context';
 import { createStructuredSelector } from 'reselect';
 import { useSize } from './hooks';
-import classnames from 'classnames';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -44,12 +43,9 @@ const useStyles = makeStyles((theme) => ({
   menuIcon: {
     color: 'white',
     position: 'absolute',
-    right: theme.spacing(6),
+    right: theme.spacing(1),
     top: theme.spacing(1),
     zIndex: 1,
-  },
-  menuIconOpened: {
-    right: theme.spacing(1),
   },
 }));
 
@@ -68,7 +64,7 @@ interface PhotoImageProps {
 
 const PhotoImage: React.FC<PhotoImageProps> = memo((props) => {
   const classes = useStyles();
-  const { infoPanelOpened, thumbnailMap } = useSelector(s);
+  const { thumbnailMap } = useSelector(s);
   const [blob, setBlob] = useState<Blob | null>(null);
   const [url, setUrl] = useState('');
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -90,6 +86,11 @@ const PhotoImage: React.FC<PhotoImageProps> = memo((props) => {
     setAnchorEl(null);
     dispatch(action.downloadOriginal(props.fileId));
   }, [dispatch, props.fileId]);
+
+  const onToggleInfo = useCallback(() => {
+    setAnchorEl(null);
+    dispatch(action.toggleInfoPanel());
+  }, [dispatch]);
 
   useEffect(() => {
     (async () => {
@@ -126,15 +127,13 @@ const PhotoImage: React.FC<PhotoImageProps> = memo((props) => {
       </IconButton>
       <IconButton
         onClick={onOpen}
-        className={classnames(
-          classes.menuIcon,
-          infoPanelOpened && classes.menuIconOpened,
-        )}
+        className={classes.menuIcon}
       >
         <MenuIcon />
       </IconButton>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={onClose}>
         <MenuItem onClick={onDownload}>Download original</MenuItem>
+        <MenuItem onClick={onToggleInfo}>Toggle Information Panel</MenuItem>
       </Menu>
     </div>
   );
