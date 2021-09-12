@@ -31,16 +31,16 @@ const useStyles = makeStyles((theme) => ({
   prevIcon: {
     color: 'white',
     position: 'absolute',
-    left: '50%',
-    transform: `translateX(${-24 - 32}px)`,
-    bottom: theme.spacing(1),
+    top: '50%',
+    transform: `translateY(-24px)`,
+    left: theme.spacing(1),
   },
   nextIcon: {
     color: 'white',
     position: 'absolute',
-    left: '50%',
-    transform: `translateX(${-24 + 32}px)`,
-    bottom: theme.spacing(1),
+    top: '50%',
+    transform: `translateY(-24px)`,
+    right: theme.spacing(1),
   },
   menuIcon: {
     color: 'white',
