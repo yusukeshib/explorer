@@ -1,123 +1,125 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useRef, useCallback, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import PrevIcon from '@material-ui/icons/ArrowBack';
-import { useSelector } from 'react-redux';
-import { ImageLayoutInfo, selector } from './context';
-import { useHistory, useParams } from 'react-router';
+import NextIcon from '@material-ui/icons/ArrowForward';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuIcon from '@material-ui/icons/MoreVert';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, action, selector } from './context';
 import { createStructuredSelector } from 'reselect';
-import { GlobalHotKeys } from 'react-hotkeys';
-import PhotoImage from './PhotoImage';
-import PhotoInfo from './PhotoInfo';
-
-const keyMap = {
-  ESC: 'Escape',
-  LEFT: 'ArrowLeft',
-  RIGHT: 'ArrowRight',
-};
+import { useSize } from './hooks';
+import Video from './Video';
+import Image from './Image';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    backgroundColor: theme.palette.background.default,
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    userSelect: 'none',
+    position: 'relative',
+    flexGrow: 1,
+    height: '100%',
+    overflow: 'hidden',
     display: 'flex',
-    flexDirection: 'row',
-    zIndex: theme.zIndex.modal,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'black',
+    backgroundSize: 'contain',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
   },
-  infoIcon: {
+  prevIcon: {
+    color: 'white',
+    position: 'absolute',
+    left: '50%',
+    transform: `translateX(${-24 - 32}px)`,
+    bottom: theme.spacing(1),
+  },
+  nextIcon: {
+    color: 'white',
+    position: 'absolute',
+    left: '50%',
+    transform: `translateX(${-24 + 32}px)`,
+    bottom: theme.spacing(1),
+  },
+  menuIcon: {
     color: 'white',
     position: 'absolute',
     right: theme.spacing(1),
     top: theme.spacing(1),
     zIndex: 1,
   },
-  closeIcon: {
-    color: 'white',
-    position: 'absolute',
-    left: theme.spacing(1),
-    top: theme.spacing(1),
-    zIndex: 1,
-  },
 }));
 
 const s = createStructuredSelector({
-  layoutList: selector.layoutList,
+  files: selector.files,
 });
 
-const Photo = memo(() => {
+interface PhotoProps {
+  fileId: string;
+  width: number;
+  height: number;
+  onPrev: () => void;
+  onNext: () => void;
+}
+
+const Photo: React.FC<PhotoProps> = memo((props) => {
+  const { files } = useSelector(s);
   const classes = useStyles();
-  const { fileId } = useParams<{ fileId: string }>();
-  const { layoutList } = useSelector(s);
-  const history = useHistory();
-  const index = layoutList.findIndex(
-    (layout) =>
-      layout.type === 'image' && (layout as ImageLayoutInfo).file.id === fileId,
-  );
-  const layout = layoutList[index] as ImageLayoutInfo;
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const ref = useRef<HTMLDivElement>(null);
+  const size = useSize(ref);
+  const p = Math.min(size.width / props.width, size.height / props.height);
+  const file = files.find((file) => file.id === props.fileId);
+
+  const onOpen = useCallback((event) => {
+    setAnchorEl(event.currentTarget);
+  }, []);
 
   const onClose = useCallback(() => {
-    history.push('/');
-  }, [history]);
+    setAnchorEl(null);
+  }, []);
 
-  const onPrev = useCallback(() => {
-    let i = index;
-    let prevLayout: ImageLayoutInfo | null = null;
-    while (true) {
-      i--;
-      const layout = layoutList[i];
-      if (!layout) break;
-      // skip title layout
-      if (layout.type !== 'image') continue;
-      prevLayout = layout as ImageLayoutInfo;
-      break;
-    }
-    if (prevLayout) {
-      history.push(`/photo/${prevLayout.file.id}`);
-    }
-  }, [history, layoutList, index]);
+  const onDownload = useCallback(() => {
+    setAnchorEl(null);
+    dispatch(action.downloadOriginal(props.fileId));
+  }, [dispatch, props.fileId]);
 
-  const onNext = useCallback(() => {
-    let i = index;
-    let nextLayout: ImageLayoutInfo | null = null;
-    while (true) {
-      i++;
-      const layout = layoutList[i];
-      if (!layout) break;
-      // skip title layout
-      if (layout.type !== 'image') continue;
-      nextLayout = layout as ImageLayoutInfo;
-      break;
-    }
-    if (nextLayout) {
-      history.push(`/photo/${nextLayout.file.id}`);
-    }
-  }, [history, layoutList, index]);
-
-  if (!layout) return null;
+  const onToggleInfo = useCallback(() => {
+    setAnchorEl(null);
+    dispatch(action.toggleInfoPanel());
+  }, [dispatch]);
 
   return (
-    <div className={classes.container}>
-      <IconButton onClick={onClose} className={classes.closeIcon}>
+    <div ref={ref} className={classes.container}>
+      {file?.type === 'video' && (
+        <Video
+          fileId={props.fileId}
+          width={props.width * p}
+          height={props.height * p}
+        />
+      )}
+      {file?.type === 'image' && (
+        <Image
+          fileId={props.fileId}
+          width={props.width * p}
+          height={props.height * p}
+        />
+      )}
+      <IconButton onClick={props.onPrev} className={classes.prevIcon}>
         <PrevIcon />
       </IconButton>
-      <GlobalHotKeys
-        allowChanges
-        keyMap={keyMap}
-        handlers={{ ESC: onClose, RIGHT: onNext, LEFT: onPrev }}
-      >
-        <PhotoImage
-          onPrev={onPrev}
-          onNext={onNext}
-          fileId={fileId}
-          width={layout.file.width}
-          height={layout.file.height}
-        />
-        <PhotoInfo />
-      </GlobalHotKeys>
+      <IconButton onClick={props.onNext} className={classes.nextIcon}>
+        <NextIcon />
+      </IconButton>
+      <IconButton onClick={onOpen} className={classes.menuIcon}>
+        <MenuIcon />
+      </IconButton>
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={onClose}>
+        <MenuItem onClick={onToggleInfo}>Toggle Information Panel</MenuItem>
+        <MenuItem onClick={onDownload}>Download original</MenuItem>
+      </Menu>
     </div>
   );
 });

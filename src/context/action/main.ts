@@ -22,7 +22,7 @@ import { downloadBlob, dataURItoBlob } from '../../utils/blobUtils';
 import ThumbnailRequest from '../thumbnail';
 
 const thumbReq = new ThumbnailRequest();
-const MINHEIGHT = 180;
+const MINHEIGHT = 120;
 const MONTH_MARGIN = 48;
 
 export const startScrolling = (): MainAction<void> => (dispatch, getState) => {
@@ -408,6 +408,29 @@ export const signOut = (): MainAction<void> => (dispatch, getState) => {
   });
 };
 
+export const loadVideo =
+  (fileId: string): AsyncMainAction<string | null> =>
+  async (dispatch, getState) => {
+    try {
+      const ctx = getState();
+      const signedIn = selector.signedIn(ctx);
+      if (!signedIn) return null;
+
+      const dbx = ctx.main.dbx;
+      if (!dbx) return null;
+
+      const file = ctx.main.files.find((file) => file.id === fileId);
+      if (!file) return null;
+      const res = await dbx.filesGetTemporaryLink({
+        path: fileId,
+      });
+      return res.result.link;
+    } catch (error) {
+      dispatchMain(dispatch, { error: `${error}` });
+      return null;
+    }
+  };
+
 export const loadImage =
   (fileId: string): AsyncMainAction<Blob | null> =>
   async (dispatch, getState) => {
@@ -425,7 +448,6 @@ export const loadImage =
           '.tag': 'w1024h768',
         },
       });
-
       return (res.result as any).fileBlob as Blob;
     } catch (error) {
       dispatchMain(dispatch, { error: `${error}` });

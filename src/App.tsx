@@ -11,7 +11,7 @@ import Root from './Root';
 import Notification from './Notification';
 import Signin from './Signin';
 import Progress from './Progress';
-import Photo from './Photo';
+import Photo from './PhotoRoute';
 import SaveProgress from './SaveProgress';
 
 const useStyles = makeStyles({
