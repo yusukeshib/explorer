@@ -12,7 +12,6 @@ import Notification from './Notification';
 import Signin from './Signin';
 import Progress from './Progress';
 import Photo from './PhotoRoute';
-import SaveProgress from './SaveProgress';
 
 const useStyles = makeStyles({
   container: {
@@ -38,7 +37,6 @@ const App = memo(() => {
             <Route path="/photo/:fileId" component={Photo} />
             <Signin />
             <Notification />
-            <SaveProgress />
           </div>
         </ReduxProvider>
       </HashRouter>
