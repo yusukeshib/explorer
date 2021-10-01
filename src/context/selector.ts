@@ -7,6 +7,7 @@ export const files = (ctx: Context) => ctx.main.files;
 export const scrolling = (ctx: Context) => ctx.main.scrolling;
 export const scrollingLabel = (ctx: Context) => ctx.main.scrollingLabel;
 export const saving = (ctx: Context) => ctx.main.saving;
+export const syncingMessage = (ctx: Context) => ctx.main.syncingMessage;
 export const syncing = (ctx: Context) => ctx.main.syncing;
 export const syncCompleted = (ctx: Context) => ctx.main.syncCompleted;
 export const syncCancelled = (ctx: Context) => ctx.main.syncCancelled;

@@ -27,6 +27,7 @@ export interface MainContext {
   scrollingLabel: string;
   saving: boolean;
   syncing: boolean;
+  syncingMessage: string;
   syncCancelled: boolean;
   syncCompleted: number;
   error: string;

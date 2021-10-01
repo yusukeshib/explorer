@@ -20,10 +20,9 @@ import * as selector from '../selector';
 import { Dropbox } from 'dropbox';
 import { downloadBlob, dataURItoBlob } from '../../utils/blobUtils';
 import ThumbnailRequest from '../thumbnail';
+import { MINHEIGHT, MONTH_MARGIN } from '../../constants';
 
 const thumbReq = new ThumbnailRequest();
-const MINHEIGHT = 120;
-const MONTH_MARGIN = 48;
 
 export const startScrolling = (): MainAction<void> => (dispatch, getState) => {
   dispatchMain(dispatch, { scrolling: true });
@@ -154,7 +153,11 @@ export const sync = (): AsyncMainAction<void> => async (dispatch, getState) => {
   const dbx = ctx.main.dbx;
   if (!dbx) return;
 
-  dispatchMain(dispatch, { syncCancelled: false, syncing: true });
+  dispatchMain(dispatch, {
+    syncingMessage: 'Syncing',
+    syncCancelled: false,
+    syncing: true,
+  });
 
   // TODO: check refetching is required before syncing
 

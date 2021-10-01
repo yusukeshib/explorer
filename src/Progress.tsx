@@ -9,14 +9,12 @@ import { createStructuredSelector } from 'reselect';
 const s = createStructuredSelector({
   saving: selector.saving,
   syncing: selector.syncing,
-  syncCompleted: selector.syncCompleted,
+  syncingMessage: selector.syncingMessage,
   syncCancelled: selector.syncCancelled,
-  fileTotal: selector.fileTotal,
 });
 
 const Progress = memo(() => {
-  const { fileTotal, saving, syncing, syncCancelled, syncCompleted } =
-    useSelector(s);
+  const { saving, syncing, syncCancelled, syncingMessage } = useSelector(s);
   const dispatch = useDispatch();
 
   const onStop = useCallback(() => {
@@ -28,7 +26,7 @@ const Progress = memo(() => {
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       open={syncing || saving}
       onClose={onStop}
-      message={`Syncing(${syncCompleted} / ${fileTotal})`}
+      message={syncingMessage}
       action={
         <IconButton disabled={syncCancelled} onClick={onStop} color="inherit">
           <CloseIcon fontSize="small" />

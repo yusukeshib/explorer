@@ -10,6 +10,7 @@ export const defaultMain: MainContext = {
   scrolling: false,
   scrollingLabel: '',
   saving: false,
+  syncingMessage: '',
   syncing: false,
   syncCancelled: false,
   syncCompleted: 0,
