@@ -62,7 +62,7 @@ const Signin = memo(() => {
   return (
     <div className={classes.container}>
       <div className={classes.panel}>
-        <Typography variant="h6">Welcome to Dropbox photo viewer</Typography>
+        <Typography variant="h6">Photo finder</Typography>
         <div className={classes.sep} />
         <Typography>
           This is a photo viewer to explore your photos in your Dropbox account

@@ -58,7 +58,7 @@ const ToolbarComponent = memo(() => {
     <AppBar position="static">
       <Toolbar className={classes.toolbar} variant="dense">
         <Typography noWrap className={classes.title}>
-          Dropbox photos
+          Photo finder
         </Typography>
         <IconButton onClick={onOpen} color="inherit">
           <MoreIcon />
